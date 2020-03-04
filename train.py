@@ -26,17 +26,20 @@ def parse_arguments():
 def evaluate(model, val_iter, vocab_size, DE, EN):
     model.eval()
     pad = EN.vocab.stoi['<pad>']
+    eos_id = EN.vocab.stoi['<eos>']
     total_loss = 0
-    for b, batch in enumerate(val_iter):
-        src, len_src = batch.src
-        trg, len_trg = batch.trg
-        src = Variable(src.data.cuda(), volatile=True)
-        trg = Variable(trg.data.cuda(), volatile=True)
-        output = model(src, trg, teacher_forcing_ratio=0.0)
-        loss = F.nll_loss(output[1:].view(-1, vocab_size),
-                               trg[1:].contiguous().view(-1),
-                               ignore_index=pad)
-        total_loss += loss.data[0]
+    with torch.no_grad():
+        for b, batch in enumerate(val_iter):
+            src, len_src = batch.src
+            trg, len_trg = batch.trg
+            src = Variable(src.data.cuda())
+            trg = Variable(trg.data.cuda())
+            output = model(src, trg, teacher_forcing_ratio=0.0)
+            loss = F.nll_loss(output[1:].view(-1, vocab_size),
+                              trg[1:].contiguous().view(-1),
+                              ignore_index=pad)
+            decoded_batch = model.decode(src, trg, method='beam-search')
+            total_loss += loss.data.item()
     return total_loss / len(val_iter)
 
 
@@ -51,12 +54,12 @@ def train(e, model, optimizer, train_iter, vocab_size, grad_clip, DE, EN):
         optimizer.zero_grad()
         output = model(src, trg)
         loss = F.nll_loss(output[1:].view(-1, vocab_size),
-                               trg[1:].contiguous().view(-1),
-                               ignore_index=pad)
+                          trg[1:].contiguous().view(-1),
+                          ignore_index=pad)
         loss.backward()
-        clip_grad_norm(model.parameters(), grad_clip)
+        torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
         optimizer.step()
-        total_loss += loss.data[0]
+        total_loss += loss.data.item()
 
         if b % 100 == 0 and b != 0:
             total_loss = total_loss / 100
@@ -83,13 +86,13 @@ def main():
     encoder = Encoder(de_size, embed_size, hidden_size,
                       n_layers=2, dropout=0.5)
     decoder = Decoder(embed_size, hidden_size, en_size,
-                      n_layers=1, dropout=0.5)
+                      n_layers=1, dropout=0.0)
     seq2seq = Seq2Seq(encoder, decoder).cuda()
     optimizer = optim.Adam(seq2seq.parameters(), lr=args.lr)
     print(seq2seq)
 
     best_val_loss = None
-    for e in range(1, args.epochs+1):
+    for e in range(1, args.epochs + 1):
         train(e, seq2seq, optimizer, train_iter,
               en_size, args.grad_clip, DE, EN)
         val_loss = evaluate(seq2seq, val_iter, en_size, DE, EN)
