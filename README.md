@@ -1,27 +1,33 @@
-# mini seq2seq
-Minimal Seq2Seq model with attention for neural machine translation in PyTorch.
+# Pytorch seq2seq-Beam-Search
+Seq2Seq model with attention and Greedy Search / Beam Search for neural machine translation in PyTorch.
 
 This implementation focuses on the following features:
 
 - Modular structure to be used in other projects
 - Minimal code for readability
 - Full utilization of batches and GPU.
+- Decoding Method Greedy Search
+- Decoding Method Beam Search
 
 This implementation relies on [torchtext](https://github.com/pytorch/text) to minimize dataset management and preprocessing parts.
 
-## Model description
-
+## Seq2Seq Model description
+The main structure of seq2seq is adopt in [seq2seq](https://github.com/keon/seq2seq)
 * Encoder: Bidirectional GRU
 * Decoder: GRU with Attention Mechanism
 * Attention: [Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/abs/1409.0473)
 
 ![](http://www.wildml.com/wp-content/uploads/2015/12/Screen-Shot-2015-12-30-at-1.16.08-PM.png)
 
+## Decoding Method
+* Greedy Search
+* Beam Search
+
 ## Requirements
 
-* GPU & CUDA
-* Python3
-* PyTorch
+* CUDA
+* Python 3.6
+* PyTorch 1.4
 * torchtext
 * Spacy
 * numpy
@@ -33,11 +39,14 @@ python -m spacy download de
 python -m spacy download en
 ```
 
+## TODO
+1. add logging
+2. change to support gpu and cpu, currently is gpu based code implementation
+3. .....
 
 ## References
-
 Based on the following implementations
+* [seq2seq](https://github.com/keon/seq2seq)
+* [PyTorch-Beam-Search-Decoding](https://github.com/budzianowski/PyTorch-Beam-Search-Decoding)
 
-* [PyTorch Tutorial](http://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html)
-* [@spro/practical-pytorch](https://github.com/spro/practical-pytorch)
-* [@AuCson/PyTorch-Batch-Attention-Seq2seq](https://github.com/AuCson/PyTorch-Batch-Attention-Seq2seq)
+
