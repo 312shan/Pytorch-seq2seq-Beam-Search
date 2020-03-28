@@ -15,7 +15,7 @@ This implementation relies on [torchtext](https://github.com/pytorch/text) to mi
 The main structure of seq2seq is adopt in [seq2seq](https://github.com/keon/seq2seq)
 * Encoder: Bidirectional GRU
 * Decoder: GRU with Attention Mechanism
-* Attention: [Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/abs/1409.0473)
+* Attention
 
 ![](http://www.wildml.com/wp-content/uploads/2015/12/Screen-Shot-2015-12-30-at-1.16.08-PM.png)
 
@@ -42,11 +42,13 @@ python -m spacy download en
 ## TODO
 1. add logging
 2. change to support gpu and cpu, currently is gpu based code implementation
-3. .....
+3. Do Length normalization experiment on Beam-Search And Compare
 
 ## References
 Based on the following implementations
+* [Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/abs/1409.0473)
 * [seq2seq](https://github.com/keon/seq2seq)
 * [PyTorch-Beam-Search-Decoding](https://github.com/budzianowski/PyTorch-Beam-Search-Decoding)
-
+* [Conditional Generation by RNN & Attention](https://www.youtube.com/watch?v=f1KUUz7v8g4)
+* [cs224n-2019-notes06-NMT_seq2seq_attention](https://web.stanford.edu/class/cs224n/readings/cs224n-2019-notes06-NMT_seq2seq_attention.pdf)
 
