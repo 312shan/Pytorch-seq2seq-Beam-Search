@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/seq2seq.iml" filepath="$PROJECT_DIR$/.idea/seq2seq.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Pytorch-seq2seq-Beam-Search.iml" filepath="$PROJECT_DIR$/.idea/Pytorch-seq2seq-Beam-Search.iml" />
     </modules>
   </component>
 </project>

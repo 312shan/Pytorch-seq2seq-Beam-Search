@@ -1,4 +1,4 @@
-# Pytorch seq2seq-Beam-Search
+# Pytorch-seq2seq-Beam-Search
 Seq2Seq model with attention and Greedy Search / Beam Search for neural machine translation in PyTorch.
 
 This implementation focuses on the following features:
