@@ -28,6 +28,7 @@ def evaluate(model, val_iter, vocab_size, DE, EN):
     pad = EN.vocab.stoi['<pad>']
     eos_id = EN.vocab.stoi['<eos>']
     total_loss = 0
+    decoded_batch_list = []
     with torch.no_grad():
         for b, batch in enumerate(val_iter):
             src, len_src = batch.src
@@ -39,8 +40,16 @@ def evaluate(model, val_iter, vocab_size, DE, EN):
                               trg[1:].contiguous().view(-1),
                               ignore_index=pad)
             decoded_batch = model.decode(src, trg, method='beam-search')
+            decoded_batch_list.append(decoded_batch)
             total_loss += loss.data.item()
-    return total_loss / len(val_iter)
+
+        print("print sample from first decode batch")
+        for sentence_index in decoded_batch_list[0]:
+            decode_text_arr = [EN.vocab.itos[i] for i in sentence_index[0]]
+            decode_stentence = " ".join(decode_text_arr[1:-1])
+            print("pred target : {}".format(decode_stentence))
+
+    return total_loss / (b + 1)
 
 
 def train(e, model, optimizer, train_iter, vocab_size, grad_clip, DE, EN):
@@ -96,7 +105,7 @@ def main():
         train(e, seq2seq, optimizer, train_iter,
               en_size, args.grad_clip, DE, EN)
         val_loss = evaluate(seq2seq, val_iter, en_size, DE, EN)
-        print("[Epoch:%d] val_loss:%5.3f | val_pp:%5.2fS"
+        print("[Epoch:%d] val_loss:%5.3f | val_pp:%5.2f"
               % (e, val_loss, math.exp(val_loss)))
 
         # Save the model if the validation loss is the best we've seen so far.

@@ -121,9 +121,9 @@ class Seq2Seq(nn.Module):
         encoder_output, hidden = self.encoder(src)  # [27, 32]=> =>[27, 32, 512],[4, 32, 512]
         hidden = hidden[:self.decoder.n_layers]  # [4, 32, 512][1, 32, 512]
         if method == 'beam-search':
-            self.beam_decode(trg, hidden, encoder_output)
+            return self.beam_decode(trg, hidden, encoder_output)
         else:
-            self.greedy_decode(trg, hidden, encoder_output)
+            return self.greedy_decode(trg, hidden, encoder_output)
 
     def greedy_decode(self, trg, decoder_hidden, encoder_outputs, ):
         '''
